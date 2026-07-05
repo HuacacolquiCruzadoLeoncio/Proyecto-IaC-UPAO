@@ -1,24 +1,67 @@
 ---
-- name: Configurar Servidores Web con Nginx
+- name: Configurar Servidores Web con Nginx y App de Tareas
   hosts: servidores_web
-  become: yes # Esto le da permisos de Administrador dentro del servidor
+  become: yes
 
   tasks:
-    - name: 1. Instalar Nginx (Servidor Web)
+    - name: 1. Instalar Nginx
       apt:
         name: nginx
         state: present
         update_cache: yes
 
-    - name: 2. Asegurar que Nginx este encendido siempre
+    - name: 2. Encender Nginx
       service:
         name: nginx
         state: started
         enabled: yes
 
-    - name: 3. Crear pagina web de prueba de la App de Tareas
+    - name: 3. Desplegar la Aplicación Real de Lista de Tareas
       copy:
-        content: |
-          <h1>Bienvenido a la App de Tareas de Leoncio</h1>
-          <p>Servidor construido con Terraform y configurado automaticamente con Ansible.</p>
         dest: /var/www/html/index.html
+        content: |
+          <!DOCTYPE html>
+          <html lang="es">
+          <head>
+              <meta charset="UTF-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <title>App de Tareas - IaC</title>
+              <style>
+                  body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; padding: 50px; text-align: center; }
+                  .container { background: white; padding: 30px; border-radius: 12px; box-shadow: 0px 4px 15px rgba(0,0,0,0.1); max-width: 450px; margin: auto; }
+                  h2 { color: #333; }
+                  .badge { background: #007bff; color: white; padding: 5px 10px; border-radius: 20px; font-size: 12px; }
+                  input { padding: 12px; width: 65%; border: 1px solid #ccc; border-radius: 6px; font-size: 16px; }
+                  button.add { padding: 12px; background: #28a745; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 16px; font-weight: bold; }
+                  button.add:hover { background: #218838; }
+                  ul { list-style-type: none; padding: 0; margin-top: 20px;}
+                  li { background: #f8f9fa; margin: 10px 0; padding: 15px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; border-left: 5px solid #007bff; }
+                  button.delete { background: #dc3545; color: white; border: none; border-radius: 4px; padding: 5px 10px; cursor: pointer; }
+                  button.delete:hover { background: #c82333; }
+              </style>
+          </head>
+          <body>
+              <div class="container">
+                  <h2>✅ Mi Lista de Tareas</h2>
+                  <p><span class="badge">Infraestructura Automatizada (Terraform + Ansible)</span></p>
+                  <p style="font-size: 13px; color: #666;">Proyecto IaC - Leoncio Huacacolqui</p>
+                  
+                  <div style="margin-top: 20px;">
+                      <input type="text" id="taskInput" placeholder="Escribe una nueva tarea...">
+                      <button class="add" onclick="addTask()">Agregar</button>
+                  </div>
+                  <ul id="taskList"></ul>
+              </div>
+
+              <script>
+                  function addTask() {
+                      let input = document.getElementById("taskInput");
+                      if(input.value.trim() === "") return;
+                      let li = document.createElement("li");
+                      li.innerHTML = input.value + ' <button class="delete" onclick="this.parentElement.remove()">Eliminar</button>';
+                      document.getElementById("taskList").appendChild(li);
+                      input.value = "";
+                  }
+              </script>
+          </body>
+          </html>
