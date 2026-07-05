@@ -2,3 +2,4 @@
 *.exe
 *.terraform*
 *.pem
+*.tfstate*
