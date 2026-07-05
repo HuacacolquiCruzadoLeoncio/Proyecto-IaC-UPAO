@@ -1,0 +1,10 @@
+# Ignorar las llaves de seguridad secretas
+*.pem
+
+# Ignorar los archivos pesados que Terraform descarga
+.terraform/
+.terraform.lock.hcl
+
+# Ignorar los archivos de estado de Terraform (tienen contraseñas ocultas)
+terraform.tfstate
+terraform.tfstate.backup

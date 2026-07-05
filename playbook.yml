@@ -1,0 +1,24 @@
+---
+- name: Configurar Servidores Web con Nginx
+  hosts: servidores_web
+  become: yes # Esto le da permisos de Administrador dentro del servidor
+
+  tasks:
+    - name: 1. Instalar Nginx (Servidor Web)
+      apt:
+        name: nginx
+        state: present
+        update_cache: yes
+
+    - name: 2. Asegurar que Nginx este encendido siempre
+      service:
+        name: nginx
+        state: started
+        enabled: yes
+
+    - name: 3. Crear pagina web de prueba de la App de Tareas
+      copy:
+        content: |
+          <h1>Bienvenido a la App de Tareas de Leoncio</h1>
+          <p>Servidor construido con Terraform y configurado automaticamente con Ansible.</p>
+        dest: /var/www/html/index.html
